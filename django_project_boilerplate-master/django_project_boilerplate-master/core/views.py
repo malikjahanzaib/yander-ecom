@@ -96,7 +96,7 @@ class CheckoutView(View):
             if shipping_address_qs.exists():
                 context.update(
                     {
-                        'default_shipping_address':shipping_address_qs[0] #q[0]=the first value inside the query set
+                        'default_shipping_address':shipping_address_qs[len(shipping_address_qs)-1] #q[0]=the first value inside the query set
                     }
                 )
 
@@ -108,7 +108,7 @@ class CheckoutView(View):
             if billing_address_qs.exists():
                 context.update(
                     {
-                        'default_billing_address':billing_address_qs[0] #[0]?
+                        'default_billing_address':billing_address_qs[len(billing_address_qs)-1] #[0]?
                     }
                 )
 
@@ -140,7 +140,8 @@ class CheckoutView(View):
                     )
                     #checking if the user has a default address
                     if address_qs.exists():
-                        shipping_address = address_qs[0] #here the shipping address would get filled withe default address used
+                        shipping_address = address_qs[len(address_qs)-1] #here the shipping address would get filled withe default address used
+                        # shipping_address.save()
                         order.shipping_address = shipping_address
                         order.save()
                        
@@ -180,7 +181,8 @@ class CheckoutView(View):
                             shipping_address.default= True
                             shipping_address.save()
                     else:
-                        message.info(self.request,"Please fill in the required shipping address fields")
+                        messages.info(self.request,"Please fill in the required shipping address fields")
+                        return redirect('core:checkout')
              
                 
                 use_default_billing = form.cleaned_data.get('use_default_billing')
@@ -208,7 +210,7 @@ class CheckoutView(View):
                     )
                     #checking if the user has a default address
                     if address_qs.exists():
-                        billing_address = address_qs[0] #here the shipping address would get filled withe default address used
+                        billing_address = address_qs[len(address_qs)-1] #here the shipping address would get filled withe default address used
                         order.billing_address = billing_address
                         order.save()
                     else:
@@ -248,6 +250,7 @@ class CheckoutView(View):
                             billing_address.save()
                     else:
                         messages.info(self.request,"Please fill in the required billing address fields")
+                        return redirect('core:checkout')
 
                 payment_option = form.cleaned_data.get('payment_option')
 
